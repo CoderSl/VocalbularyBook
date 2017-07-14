@@ -94,11 +94,11 @@ public class TranslateOfflineLineActivity extends Activity {
     private void query() {
         String input = fanyiInputText.getText().toString();
         if (TextUtils.isEmpty(input)) {
-            ToastUtils.show("请输入要查询的词");
+            ToastUtils.showLongToast("请输入要查询的词");
         }
         Translate translate = EnLineTranslator.lookup(input, LanguageConvert.AUTO);
         if (translate == null) {
-            ToastUtils.show("找不到翻译结果或者YoudaoApplication 未初始化");
+            ToastUtils.showLongToast("找不到翻译结果或者YoudaoApplication 未初始化");
             return;
         }
         TranslateData td = new TranslateData(System.currentTimeMillis(),

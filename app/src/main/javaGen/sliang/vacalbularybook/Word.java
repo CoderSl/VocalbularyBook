@@ -20,7 +20,7 @@ import sliang.vocalbularybook.WordVoiceDao;
  * Created by Administrator on 2017/7/12.
  */
 @Entity
-public class Word {
+public class Word  {
     @Id(autoincrement = true)
     public long id;
     @ToMany(referencedJoinProperty = "wordId")
@@ -231,5 +231,14 @@ public class Word {
             wordVoiceId = wordVoice.getWordVoiceId();
             wordVoice__resolvedKey = wordVoiceId;
         }
+    }
+
+
+    public void setExplains(List<Explain> explains){
+        this.explains=explains;
+    }
+
+    public void setTranslations(List<Explain> explains){
+        this.translations=explains;
     }
 }

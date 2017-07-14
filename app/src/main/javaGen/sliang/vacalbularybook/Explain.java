@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * Created by Administrator on 2017/7/12.
  */
 @Entity
-public class Explain {
+public class Explain  {
     public long  wordId;
     public String name;
 

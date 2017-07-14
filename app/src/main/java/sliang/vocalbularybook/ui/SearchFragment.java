@@ -42,13 +42,13 @@ import sliang.vocalbularybook.DaoSession;
 import sliang.vocalbularybook.ExplainDao;
 import sliang.vocalbularybook.R;
 import sliang.vocalbularybook.TranslationsDao;
+import sliang.vocalbularybook.VocalbularyApplication;
 import sliang.vocalbularybook.WordDao;
 import sliang.vocalbularybook.WordVoiceDao;
 import sliang.vocalbularybook.base.fragment.BaseFragment;
 import sliang.vocalbularybook.ui.adapter.SearchAdapter;
 import sliang.vocalbularybook.utils.ReflexUtils;
 import sliang.vocalbularybook.utils.StringUtils;
-import sliang.vocalbularybook.youdao.DemoApplication;
 import sliang.vocalbularybook.youdao.TranslateData;
 
 /**
@@ -76,7 +76,7 @@ public class SearchFragment extends BaseFragment {
 
     @Override
     protected void initView() {
-        daoSession = DemoApplication.getInstance().getDaoSession();
+        daoSession = VocalbularyApplication.getInstance().getDaoSession();
         searchAdapter = new SearchAdapter(getBaseActivity(),new ArrayList());
         listRv.setLayoutManager(new LinearLayoutManager(getContext()));
         listRv.setAdapter(searchAdapter);
@@ -144,10 +144,10 @@ public class SearchFragment extends BaseFragment {
 
         if(words!=null&&words.size()>0){
             try{
-                ArrayList<Translate> translates = getTranslates(words);
-                showWord(translates);
+//                ArrayList<Translate> translates = getTranslates(words);
+                showWord(words);
             }catch (Exception e){
-                Log.e("sl",e.toString());
+                Log.e("diction",e.toString());
             }
             return;
         }
@@ -164,14 +164,71 @@ public class SearchFragment extends BaseFragment {
                         }
                     });
 
-            ArrayList objects = new ArrayList<Translate>();
-            objects.add(translate);
+            Word word = translateToWord(translate);
+
+            ArrayList objects = new ArrayList<Word>();
+            objects.add(word);
             showWord(objects);
             return;
         }
 
         findWordFromYun(input);
 
+    }
+
+
+    /**
+     *
+     * 有道实体转word本地数据库实体,      ！！！！！！不能用于存储到数据库 ！！！！！！
+     *
+     *  @param
+     *
+     *  @return
+     *
+     */
+    private Word translateToWord(Translate translate) {
+        List<String> explains = translate.getExplains();
+        List<String> translations = translate.getTranslations();
+        final Word word = new Word();
+        word.setId(1);
+
+        ArrayList<Explain> explainsDao = new ArrayList<>();
+        for (int i = 0; i < explains.size(); i++) {
+            String s = explains.get(i);
+            long id = word.getId();
+            Explain explain = new Explain(id, s);
+            explainsDao.add(explain);
+        }
+        word.setExplains(explainsDao);
+
+
+        ArrayList<Explain> translationsDao = new ArrayList<>();
+        for (int i = 0; i < translations.size(); i++) {
+            String s = translations.get(i);
+            long id = word.getId();
+            Translations translations1 = new Translations(id, s);
+            Explain explain = new Explain(id, s);
+            translationsDao.add(explain);
+        }
+        word.setTranslations(translationsDao);
+
+        String phonetic = translate.getPhonetic();
+        String query = translate.getQuery();
+        String ukPhonetic = translate.getUkPhonetic();
+        String usPhonetic = translate.getUsPhonetic();
+        String  speakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "speakUrl");
+        String  UKSpeakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "UKSpeakUrl");
+        String  USSpeakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "USSpeakUrl");
+        String  resultSpeakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "resultSpeakUrl");
+
+        WordVoice wordVoice = new WordVoice(1,speakUrl,UKSpeakUrl,USSpeakUrl,resultSpeakUrl);
+
+        word.setWordVoiceId(wordVoice.getWordVoiceId());
+        word.setName(query);
+        word.setPhonetic(phonetic);
+        word.setUkPhonetic(ukPhonetic);
+        word.setUsPhonetic(usPhonetic);
+        return word;
     }
 
 
@@ -198,10 +255,11 @@ public class SearchFragment extends BaseFragment {
             public void onResult(Translate result, String input) {
                 TranslateData td = new TranslateData(
                         System.currentTimeMillis(), result);
-                ArrayList<Translate> translates = new ArrayList<>();
-                translates.add(result);
+                ArrayList<Word> words = new ArrayList<>();
                 saveToDao(result);
-                showWord(translates);
+                Word word = translateToWord(result);
+                words.add(word);
+                showWord(words);
             }
 
             @Override
@@ -362,16 +420,16 @@ public class SearchFragment extends BaseFragment {
      *  @return
      *
      */
-    private void showWord(List<Translate> translates) {
-        ArrayList<TranslateData> translateDatas = new ArrayList<>();
-        for (int i = 0; i < translates.size(); i++) {
-            Translate translate = translates.get(i);
-            TranslateData td = new TranslateData(
-                    System.currentTimeMillis(), translate);
-            translateDatas.add(td);
-        }
+    private void showWord(List<Word> words) {
+//        ArrayList<TranslateData> translateDatas = new ArrayList<>();
+//        for (int i = 0; i < translates.size(); i++) {
+//            Translate translate = translates.get(i);
+//            TranslateData td = new TranslateData(
+//                    System.currentTimeMillis(), translate);
+//            translateDatas.add(td);
+//        }
 
-        searchAdapter.addData(translateDatas);
+        searchAdapter.addData(words);
         searchAdapter.notifyDataSetChanged();
     }
 
@@ -389,7 +447,7 @@ public class SearchFragment extends BaseFragment {
      */
     public   void read(String filePath){
         long startTime = System.currentTimeMillis();
-        Log.e("sl","start---------");
+        Log.e("diction","start---------");
         BufferedSource bufferedSource = null;
         try {
 //
@@ -416,7 +474,7 @@ public class SearchFragment extends BaseFragment {
 
             long doneTime = System.currentTimeMillis();
             long duringTime= doneTime - startTime;
-            Log.e("sl","done-----------------"+duringTime/1000);
+            Log.e("diction","done-----------------"+duringTime/1000);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

@@ -6,15 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import com.youdao.sdk.ydtranslate.Translate;
-
 import java.util.List;
 
 import butterknife.BindView;
 import sliang.vocalbularybook.R;
-import sliang.vocalbularybook.youdao.TranslateData;
 import sliang.vocalbularybook.base.activity.BaseActivity;
-import sliang.vocalbularybook.utils.ReflexUtils;
 
 /**
  * Created by Administrator on 2017/7/13.
@@ -29,8 +25,10 @@ public class WordDetailActivity extends BaseActivity {
     TextView explainTv;
     @BindView(R.id.speek_tv)
     TextView speekTv;
-    private TranslateData translateData;
     private String speakUrl;
+    private List<String> translations;
+    private String query;
+    private String phonetic;
 
     @Override
     public int getLayoutId() {
@@ -40,7 +38,10 @@ public class WordDetailActivity extends BaseActivity {
     @Override
     public void initView() {
         Bundle bundleExtra = getIntent().getBundleExtra(PARAM_INTENT);
-         translateData = (TranslateData) bundleExtra.getSerializable("translateData");
+        translations = (List<String>) bundleExtra.getSerializable("translations");
+         query = bundleExtra.getString("query");
+         phonetic = bundleExtra.getString("phonetic");
+        speakUrl=bundleExtra.getString("speakUrl");
     }
 
     @Override
@@ -50,12 +51,7 @@ public class WordDetailActivity extends BaseActivity {
 
     @Override
     public void loadData() {
-        String query = translateData.getQuery();
-        Translate translate = translateData.getTranslate();
-        String phonetic = translate.getPhonetic();
-        List<String> translations = translate.getTranslations();
 
-          speakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "USSpeakUrl");
 
         StringBuilder stringBuilder=new StringBuilder();
         for (int i = 0; i < translations.size(); i++) {

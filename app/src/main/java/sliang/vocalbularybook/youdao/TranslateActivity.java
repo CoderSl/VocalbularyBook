@@ -138,7 +138,7 @@ public class TranslateActivity extends Activity {
 
 				if (!from.contains("中文") && !to.contains("中文")
 						&& !to.contains("自动") && !from.contains("自动")) {
-					ToastUtils.show("源语言或者目标语言其中之一必须为中文");
+					ToastUtils.showLongToast("源语言或者目标语言其中之一必须为中文");
 					languageSelect.setText(language);
 					return;
 				}
@@ -190,7 +190,7 @@ public class TranslateActivity extends Activity {
 
 			@Override
 			public void onError(TranslateErrorCode error) {
-				ToastUtils.show("查询错误:" + error.name());
+				ToastUtils.showLongToast("查询错误:" + error.name());
 				dismissLoadingView();
 			}
 		});

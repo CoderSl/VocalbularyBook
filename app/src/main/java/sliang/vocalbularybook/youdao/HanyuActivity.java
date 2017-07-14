@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.util.List;
 
 import sliang.vocalbularybook.R;
-import sliang.vocalbularybook.utils.ToastUtils;
 
 
 public class HanyuActivity extends Activity {
@@ -54,7 +53,7 @@ public class HanyuActivity extends Activity {
                     // TODO Auto-generated catch block
                     // 初始化之前，请保证离线文件存储在Environment.getExternalStorageDirectory().getPath()
                     // + "/yuwen/backup/"路径下
-                    ToastUtils.show("初始化失败");
+//                    ToastUtils.show("初始化失败");
                 }
             }
 
@@ -115,7 +114,7 @@ public class HanyuActivity extends Activity {
             });
             return;
         }
-        ToastUtils.show("请输入要查询的词");
+//        ToastUtils.show("请输入要查询的词");
     }
     
     public void showResult(final List<ChDictTranslate> chTs){

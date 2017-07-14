@@ -46,8 +46,21 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:id="@+id/ll_main_home"
+                    android:id="@+id/translate_rb"
+                    android:background="#eee"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="查询"
                     android:checked="true"
+                    />
+                <RadioButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="生词本"
+                    android:id="@+id/strange_book_rb"
                     />
 
 

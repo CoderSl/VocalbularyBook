@@ -137,11 +137,11 @@ public class TranslateOfflineWordActivity extends Activity {
 	private void query(String input) {
 
 		if (TextUtils.isEmpty(input)) {
-			ToastUtils.show("请输入要查询的词");
+			ToastUtils.showLongToast("请输入要查询的词");
 		}
 		Translate translate = EnWordTranslator.lookupNative(input);
 		if(translate == null){
-			ToastUtils.show("sorry,词丢了或者YouDaoApplication未初始化（未调用init）或者未授权");
+			ToastUtils.showLongToast("sorry,词丢了或者YouDaoApplication未初始化（未调用init）或者未授权");
 			return;
 		}
 		showWord(translate);
@@ -252,7 +252,7 @@ public class TranslateOfflineWordActivity extends Activity {
 
 	public   void read(String filePath){
 		long startTime = System.currentTimeMillis();
-		Log.e("sl","start---------");
+		Log.e("diction","start---------");
 		BufferedSource bufferedSource = null;
 		try {
 
@@ -278,7 +278,7 @@ public class TranslateOfflineWordActivity extends Activity {
 
 			long doneTime = System.currentTimeMillis();
 			long duringTime= doneTime - startTime;
-			Log.e("sl","done-----------------"+duringTime/1000);
+			Log.e("diction","done-----------------"+duringTime/1000);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

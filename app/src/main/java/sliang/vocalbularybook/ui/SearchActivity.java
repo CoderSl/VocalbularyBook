@@ -3,7 +3,9 @@ package sliang.vocalbularybook.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
+import butterknife.OnClick;
 import sliang.vocalbularybook.R;
 import sliang.vocalbularybook.base.activity.BaseActivity;
 
@@ -25,8 +27,9 @@ public class SearchActivity extends BaseActivity {
     public void initView() {
 
         SearchFragment searchFragment = new SearchFragment();
+        StrangeBookFragment bookFragment = new StrangeBookFragment();
         fragments=new  Fragment[]{
-                searchFragment
+                searchFragment,bookFragment
         };
     }
 
@@ -53,6 +56,23 @@ public class SearchActivity extends BaseActivity {
 
     }
 
+
+    @OnClick({
+            R.id.translate_rb, R.id.strange_book_rb
+    })
+    public void onClick(View view) {
+        int index=0;
+        switch (view.getId()) {
+            case R.id.translate_rb:
+                index = 0;
+                break;
+            case R.id.strange_book_rb:
+                index = 1;
+                break;
+
+        }
+        changeFragment(index, false);
+    }
 
 
     /**

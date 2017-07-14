@@ -6,14 +6,18 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.youdao.sdk.ydtranslate.Translate;
-
+import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import sliang.vacalbularybook.Explain;
+import sliang.vacalbularybook.StrangeWordBook;
+import sliang.vacalbularybook.Word;
+import sliang.vocalbularybook.DaoSession;
 import sliang.vocalbularybook.R;
-import sliang.vocalbularybook.youdao.TranslateData;
+import sliang.vocalbularybook.StrangeWordBookDao;
+import sliang.vocalbularybook.VocalbularyApplication;
 import sliang.vocalbularybook.base.activity.BaseActivity;
 import sliang.vocalbularybook.base.adapter.CommonRcvAdapter;
 import sliang.vocalbularybook.base.adapter.item.AdapterItem;
@@ -56,14 +60,14 @@ public class SearchAdapter extends CommonRcvAdapter {
 
         @Override
         public void onUpdateViews(Object model, int position) {
-            final TranslateData translateData = (TranslateData) model;
-            String query = translateData.getQuery();
-            Translate translate = translateData.getTranslate();
-            String phonetic = translate.getPhonetic();
-            List<String> translations = translate.getTranslations();
+            final Word word = (Word) model;
+            String query = word.getName();
+            final String phonetic = word.getPhonetic();
+            List<Explain> translations = word.getTranslations();
+            final List<String> explainStrings = word.getExplainStrings();
             StringBuilder stringBuilder=new StringBuilder();
-            for (int i = 0; i < translations.size(); i++) {
-                stringBuilder.append(translations.get(i)+"  ");
+            for (int i = 0; i < explainStrings.size(); i++) {
+                stringBuilder.append(explainStrings.get(i)+"  ");
             }
             viewHolder.queryTv.setText(query);
             viewHolder.phonogramTv.setText("/  "+phonetic+"  /");
@@ -71,8 +75,12 @@ public class SearchAdapter extends CommonRcvAdapter {
             viewHolder.mainLl.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    addToStangeBook(word);
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("translateData",translateData);
+                    bundle.putString("phonetic",  word.getUsPhonetic());
+                    bundle.putString("query",  word.getName());
+                    bundle.putString("speakUrl",  word.getWordVoice().getUSSpeakUrl());
+                    bundle.putSerializable("translations", (Serializable) explainStrings);
                     baseActivity.goToOthers(WordDetailActivity.class,bundle);
                 }
             });
@@ -92,5 +100,13 @@ public class SearchAdapter extends CommonRcvAdapter {
                 ButterKnife.bind(this, view);
             }
         }
+    }
+
+    private void addToStangeBook(Word word) {
+        DaoSession daoSession = VocalbularyApplication.getInstance().getDaoSession();
+        StrangeWordBookDao strangeWordBookDao = daoSession.getStrangeWordBookDao();
+        long count = strangeWordBookDao.count();
+        StrangeWordBook strangeWordBook = new StrangeWordBook(count,System.currentTimeMillis(),1,word.getId());
+        strangeWordBookDao.insert(strangeWordBook);
     }
 }
