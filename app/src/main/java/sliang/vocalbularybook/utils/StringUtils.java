@@ -171,4 +171,22 @@ public class StringUtils {
         }
         return new String(chars);
     }
+
+
+    /**
+     *
+     * 去除字符串最后的换行符
+     *
+     *  @param
+     *
+     *  @return
+     *
+     */
+
+    public static String delEnter(String s){
+        while (s.charAt(s.length() - 1)=='\n'){
+            s=s.substring(0,s.length() -2);
+        }
+        return s;
+    }
 }
