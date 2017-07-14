@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/base40dp">
+<RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/base40dp"
+                android:clickable="true"
+                android:background="@color/common_color_white">
+
+    <ImageView
+        android:id="@+id/action_back_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/base12dp"
+        android:src="@drawable/icon_setting_back"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:id="@+id/action_left_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/base12dp"
+        android:src="@drawable/icon_setting_back"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/action_title"
+        android:layout_width="@dimen/base200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:ellipsize="end"
+        android:gravity="center_horizontal"
+        android:maxLines="1"
+        android:textColor="#333333"
+        android:textSize="17sp"/>
+
+    <TextView
+        android:id="@+id/action_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/base12dp"
+        android:textColor="#666666"
+        android:textSize="15sp"
+        android:visibility="gone"/>
+
+    <ImageView
+        android:id="@+id/action_right_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/base10dp"
+        android:visibility="gone"
+        />
+
+    <View
+        android:id="@+id/navbar_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/base1dp"
+        android:layout_alignParentBottom="true"
+        android:background="#e8eaf2"/>
+
+
+</RelativeLayout>
+
+</FrameLayout>

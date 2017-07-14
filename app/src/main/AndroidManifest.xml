@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="sliang.vocalbularybook">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 获取WiFi状态 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 获取网络信息状态，如当前的网络连接是否有效 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 读取手机状态 phone group -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <!-- 往SDCard读写数据权限   storage group -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:name=".DemoApplication"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".TranslateActivity"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+        <activity
+            android:name=".TranslateDetailActivity"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+        <activity
+            android:name=".TranslateOfflineLineActivity"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+        <activity
+            android:name=".TranslateOfflineWordActivity"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+        <activity
+            android:name=".MyBrowser"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+
+        <activity
+            android:name=".HanyuActivity"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+
+        <!---                      华丽的分割线                           -->
+        <activity
+            android:name=".ui.SearchActivity"
+            android:theme="@style/XiaoYouStyle" >
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.WordDetailActivity"
+            android:theme="@style/XiaoYouStyle" >
+        </activity>
+
+    </application>
+
+</manifest>
