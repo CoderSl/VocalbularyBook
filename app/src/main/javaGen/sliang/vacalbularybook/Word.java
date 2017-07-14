@@ -4,14 +4,17 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.ToOne;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import sliang.vocalbularybook.DaoSession;
-import sliang.vocalbularybook.WordDao;
 import sliang.vocalbularybook.ExplainDao;
+import sliang.vocalbularybook.WordDao;
+import sliang.vocalbularybook.WordVoiceDao;
 
 /**
  * Created by Administrator on 2017/7/12.
@@ -26,6 +29,9 @@ public class Word {
     private String usPhonetic;
     private String phonetic;
     private String ukPhonetic;
+    private long wordVoiceId;
+    @ToOne(joinProperty = "wordVoiceId")
+    private WordVoice wordVoice;
     @ToMany(referencedJoinProperty = "wordId")
     private List<Explain> explains;
     /** Used to resolve relations */
@@ -34,13 +40,17 @@ public class Word {
     /** Used for active entity operations. */
     @Generated(hash = 768131649)
     private transient WordDao myDao;
-    @Generated(hash = 1433444883)
-    public Word(long id, String name, String usPhonetic, String phonetic, String ukPhonetic) {
+    @Generated(hash = 807109601)
+    private transient Long wordVoice__resolvedKey;
+    @Generated(hash = 11403810)
+    public Word(long id, String name, String usPhonetic, String phonetic, String ukPhonetic,
+            long wordVoiceId) {
         this.id = id;
         this.name = name;
         this.usPhonetic = usPhonetic;
         this.phonetic = phonetic;
         this.ukPhonetic = ukPhonetic;
+        this.wordVoiceId = wordVoiceId;
     }
     @Generated(hash = 3342184)
     public Word() {
@@ -184,5 +194,42 @@ public class Word {
             strings.add(this.explains.get(i).getName());
         }
         return strings;
+    }
+    public long getWordVoiceId() {
+        return this.wordVoiceId;
+    }
+    public void setWordVoiceId(long wordVoiceId) {
+        this.wordVoiceId = wordVoiceId;
+    }
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1576958091)
+    public WordVoice getWordVoice() {
+        long __key = this.wordVoiceId;
+        if (wordVoice__resolvedKey == null || !wordVoice__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            WordVoiceDao targetDao = daoSession.getWordVoiceDao();
+            WordVoice wordVoiceNew = targetDao.load(__key);
+            synchronized (this) {
+                wordVoice = wordVoiceNew;
+                wordVoice__resolvedKey = __key;
+            }
+        }
+        return wordVoice;
+    }
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1107496766)
+    public void setWordVoice(@NotNull WordVoice wordVoice) {
+        if (wordVoice == null) {
+            throw new DaoException(
+                    "To-one property 'wordVoiceId' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.wordVoice = wordVoice;
+            wordVoiceId = wordVoice.getWordVoiceId();
+            wordVoice__resolvedKey = wordVoiceId;
+        }
     }
 }

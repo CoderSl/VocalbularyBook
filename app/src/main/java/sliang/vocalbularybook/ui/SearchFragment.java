@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,26 +22,34 @@ import com.youdao.sdk.ydtranslate.Translate;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import okio.BufferedSource;
+import okio.Okio;
+import okio.Source;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import sliang.vacalbularybook.Explain;
 import sliang.vacalbularybook.Translations;
 import sliang.vacalbularybook.Word;
+import sliang.vacalbularybook.WordVoice;
 import sliang.vocalbularybook.DaoSession;
-import sliang.vocalbularybook.DemoApplication;
 import sliang.vocalbularybook.ExplainDao;
 import sliang.vocalbularybook.R;
-import sliang.vocalbularybook.TranslateData;
 import sliang.vocalbularybook.TranslationsDao;
 import sliang.vocalbularybook.WordDao;
+import sliang.vocalbularybook.WordVoiceDao;
 import sliang.vocalbularybook.base.fragment.BaseFragment;
 import sliang.vocalbularybook.ui.adapter.SearchAdapter;
+import sliang.vocalbularybook.utils.ReflexUtils;
 import sliang.vocalbularybook.utils.StringUtils;
+import sliang.vocalbularybook.youdao.DemoApplication;
+import sliang.vocalbularybook.youdao.TranslateData;
 
 /**
  * Created by Administrator on 2017/7/13.
@@ -75,6 +85,14 @@ public class SearchFragment extends BaseFragment {
     }
 
     private void setListenner() {
+
+        fanyiBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                read("");
+            }
+        });
+
         fanyiInputText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,8 +143,12 @@ public class SearchFragment extends BaseFragment {
         List words = queryFromDao(input);
 
         if(words!=null&&words.size()>0){
-            ArrayList<Translate> translates = getTranslates(words);
-            showWord(translates);
+            try{
+                ArrayList<Translate> translates = getTranslates(words);
+                showWord(translates);
+            }catch (Exception e){
+                Log.e("sl",e.toString());
+            }
             return;
         }
 
@@ -138,7 +160,7 @@ public class SearchFragment extends BaseFragment {
                     .subscribe(new Action1<Translate>() {
                         @Override
                         public void call(Translate translate) {
-                            saveToDao(translate);
+                                saveToDao(translate);
                         }
                     });
 
@@ -209,6 +231,9 @@ public class SearchFragment extends BaseFragment {
             translate.setQuery(word.getName());
             translate.setExplains(word.getExplainStrings());
             translate.setTranslations(word.getExplainStrings());
+            if(word.getWordVoice()!=null){
+                translate.setUSSpeakUrl(word.getWordVoice().getUSSpeakUrl());
+            }
             translates.add(translate);
         }
         return translates;
@@ -281,38 +306,50 @@ public class SearchFragment extends BaseFragment {
      *
      */
     private void saveToDao(Translate translate) {
-        final ExplainDao explainDao = daoSession.getExplainDao();
-        final TranslationsDao translationsDao = daoSession.getTranslationsDao();
-        WordDao wordDao = daoSession.getWordDao();
-        List<String> explains = translate.getExplains();
-        List<String> translations = translate.getTranslations();
-        final Word word = new Word();
-        long wordId = wordDao.count();
-        word.setId(wordId + 1);
+        try{
+            final ExplainDao explainDao = daoSession.getExplainDao();
+            final TranslationsDao translationsDao = daoSession.getTranslationsDao();
+            WordDao wordDao = daoSession.getWordDao();
+            WordVoiceDao wordVoiceDao = daoSession.getWordVoiceDao();
+            List<String> explains = translate.getExplains();
+            List<String> translations = translate.getTranslations();
+            final Word word = new Word();
+            long wordId = wordDao.count();
+            word.setId(wordId + 1);
 
-        for (int i = 0; i < explains.size(); i++) {
-            String s = explains.get(i);
-            long id = word.getId();
-            Explain explain = new Explain(id, s);
-            explainDao.insert(explain);
-        }
+            for (int i = 0; i < explains.size(); i++) {
+                String s = explains.get(i);
+                long id = word.getId();
+                Explain explain = new Explain(id, s);
+                explainDao.insert(explain);
+            }
 
-        for (int i = 0; i < translations.size(); i++) {
-            String s = translations.get(i);
-            long id = word.getId();
-            Translations explain = new Translations(id, s);
-            translationsDao.insert(explain);
-        }
+            for (int i = 0; i < translations.size(); i++) {
+                String s = translations.get(i);
+                long id = word.getId();
+                Translations explain = new Translations(id, s);
+                translationsDao.insert(explain);
+            }
 
-        String phonetic = translate.getPhonetic();
-        String query = translate.getQuery();
-        String ukPhonetic = translate.getUkPhonetic();
-        String usPhonetic = translate.getUsPhonetic();
-        word.setName(query);
-        word.setPhonetic(phonetic);
-        word.setUkPhonetic(ukPhonetic);
-        word.setUsPhonetic(usPhonetic);
-        wordDao.insert(word);
+            String phonetic = translate.getPhonetic();
+            String query = translate.getQuery();
+            String ukPhonetic = translate.getUkPhonetic();
+            String usPhonetic = translate.getUsPhonetic();
+            String  speakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "speakUrl");
+            String  UKSpeakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "UKSpeakUrl");
+            String  USSpeakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "USSpeakUrl");
+            String  resultSpeakUrl = (String) ReflexUtils.getClassFiled(Translate.class, translate, "resultSpeakUrl");
+            long count = wordVoiceDao.count();
+            WordVoice wordVoice = new WordVoice(count+1,speakUrl,UKSpeakUrl,USSpeakUrl,resultSpeakUrl);
+            wordVoiceDao.insert(wordVoice);
+            word.setWordVoiceId(wordVoice.getWordVoiceId());
+            word.setName(query);
+            word.setPhonetic(phonetic);
+            word.setUkPhonetic(ukPhonetic);
+            word.setUsPhonetic(usPhonetic);
+            wordDao.insert(word);
+        }catch (Exception e){}
+
     }
 
 
@@ -336,5 +373,60 @@ public class SearchFragment extends BaseFragment {
 
         searchAdapter.addData(translateDatas);
         searchAdapter.notifyDataSetChanged();
+    }
+
+
+
+
+    /**
+     *
+     * 手动导入词库时需要，正常情况用不到
+     *
+     *  @param
+     *
+     *  @return
+     *
+     */
+    public   void read(String filePath){
+        long startTime = System.currentTimeMillis();
+        Log.e("sl","start---------");
+        BufferedSource bufferedSource = null;
+        try {
+//
+//            String path = Environment.getExternalStorageDirectory().getPath();
+//            File file = new File(path, filePath);
+            File file = new File("/storage/emulated/0/dictionCopy.txt");
+            Source source = Okio.source(file);
+            bufferedSource = Okio.buffer(source);
+            String read="";
+            do{
+                read = bufferedSource.readUtf8Line();
+                if(read==""){
+                    continue;
+                }
+                try {
+                    Translate wordFromYoudao = findWordFromYoudao(read);
+                    saveToDao(wordFromYoudao);
+                }catch (Exception e){
+                    continue;
+                }
+
+
+            }while (read!=null);
+
+            long doneTime = System.currentTimeMillis();
+            long duringTime= doneTime - startTime;
+            Log.e("sl","done-----------------"+duringTime/1000);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (null != bufferedSource) {
+                    bufferedSource.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

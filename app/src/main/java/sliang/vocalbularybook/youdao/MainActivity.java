@@ -1,4 +1,4 @@
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import sliang.vocalbularybook.R;
 
 public class MainActivity extends Activity {
     @BindView(R.id.titleBar)

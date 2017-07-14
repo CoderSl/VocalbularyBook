@@ -1,4 +1,4 @@
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 /**
  * @(#)BrowserActivity.java, 2013�?10�?22�?. Copyright 2013 Yodao, Inc. All
@@ -17,6 +17,8 @@ import android.view.Window;
 import android.widget.TextView;
 
 import com.youdao.sdk.app.WordHelper;
+
+import sliang.vocalbularybook.R;
 
 /**
  * @author lukun

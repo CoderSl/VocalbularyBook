@@ -1,4 +1,4 @@
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 /**
  * @(#)BrowserActivity.java, 2013年10月22日. Copyright 2013 Yodao, Inc. All
@@ -37,6 +37,11 @@ import okio.Source;
 import sliang.vacalbularybook.Explain;
 import sliang.vacalbularybook.Translations;
 import sliang.vacalbularybook.Word;
+import sliang.vocalbularybook.DaoSession;
+import sliang.vocalbularybook.ExplainDao;
+import sliang.vocalbularybook.R;
+import sliang.vocalbularybook.TranslationsDao;
+import sliang.vocalbularybook.WordDao;
 import sliang.vocalbularybook.utils.ToastUtils;
 
 

@@ -1,4 +1,4 @@
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 /**
  * @(#)ListenForwardHelper.java, 2015�?4�?4�?. Copyright 2012 Yodao, Inc. All
@@ -9,6 +9,8 @@ package sliang.vocalbularybook;
 
 import android.app.Activity;
 import android.content.Intent;
+
+import sliang.vocalbularybook.R;
 
 /**
  * @author lukun 跳转

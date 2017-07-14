@@ -1,4 +1,4 @@
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -21,6 +21,7 @@ import com.youdao.sdk.chdict.ExamLine;
 import java.io.IOException;
 import java.util.List;
 
+import sliang.vocalbularybook.R;
 import sliang.vocalbularybook.utils.ToastUtils;
 
 

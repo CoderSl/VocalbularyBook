@@ -3,7 +3,7 @@
  *                           reserved. YODAO PROPRIETARY/CONFIDENTIAL. Use is
  *                           subject to license terms.
  */
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 import android.app.Application;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +12,9 @@ import android.os.Environment;
 import com.youdao.sdk.app.YouDaoApplication;
 
 import java.io.File;
+
+import sliang.vocalbularybook.DaoMaster;
+import sliang.vocalbularybook.DaoSession;
 
 /**
  * @author lukun

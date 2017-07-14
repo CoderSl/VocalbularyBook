@@ -1,13 +1,18 @@
 package sliang.vocalbularybook;
 
+import java.util.List;
+import java.util.ArrayList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
 import org.greenrobot.greendao.AbstractDao;
 import org.greenrobot.greendao.Property;
+import org.greenrobot.greendao.internal.SqlUtils;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
+
+import sliang.vacalbularybook.WordVoice;
 
 import sliang.vacalbularybook.Word;
 
@@ -29,6 +34,7 @@ public class WordDao extends AbstractDao<Word, Long> {
         public final static Property UsPhonetic = new Property(2, String.class, "usPhonetic", false, "US_PHONETIC");
         public final static Property Phonetic = new Property(3, String.class, "phonetic", false, "PHONETIC");
         public final static Property UkPhonetic = new Property(4, String.class, "ukPhonetic", false, "UK_PHONETIC");
+        public final static Property WordVoiceId = new Property(5, long.class, "wordVoiceId", false, "WORD_VOICE_ID");
     }
 
     private DaoSession daoSession;
@@ -51,7 +57,8 @@ public class WordDao extends AbstractDao<Word, Long> {
                 "\"NAME\" TEXT," + // 1: name
                 "\"US_PHONETIC\" TEXT," + // 2: usPhonetic
                 "\"PHONETIC\" TEXT," + // 3: phonetic
-                "\"UK_PHONETIC\" TEXT);"); // 4: ukPhonetic
+                "\"UK_PHONETIC\" TEXT," + // 4: ukPhonetic
+                "\"WORD_VOICE_ID\" INTEGER NOT NULL );"); // 5: wordVoiceId
     }
 
     /** Drops the underlying database table. */
@@ -84,6 +91,7 @@ public class WordDao extends AbstractDao<Word, Long> {
         if (ukPhonetic != null) {
             stmt.bindString(5, ukPhonetic);
         }
+        stmt.bindLong(6, entity.getWordVoiceId());
     }
 
     @Override
@@ -110,6 +118,7 @@ public class WordDao extends AbstractDao<Word, Long> {
         if (ukPhonetic != null) {
             stmt.bindString(5, ukPhonetic);
         }
+        stmt.bindLong(6, entity.getWordVoiceId());
     }
 
     @Override
@@ -130,7 +139,8 @@ public class WordDao extends AbstractDao<Word, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // name
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // usPhonetic
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // phonetic
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // ukPhonetic
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // ukPhonetic
+            cursor.getLong(offset + 5) // wordVoiceId
         );
         return entity;
     }
@@ -142,6 +152,7 @@ public class WordDao extends AbstractDao<Word, Long> {
         entity.setUsPhonetic(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setPhonetic(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setUkPhonetic(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setWordVoiceId(cursor.getLong(offset + 5));
      }
     
     @Override
@@ -169,4 +180,97 @@ public class WordDao extends AbstractDao<Word, Long> {
         return true;
     }
     
+    private String selectDeep;
+
+    protected String getSelectDeep() {
+        if (selectDeep == null) {
+            StringBuilder builder = new StringBuilder("SELECT ");
+            SqlUtils.appendColumns(builder, "T", getAllColumns());
+            builder.append(',');
+            SqlUtils.appendColumns(builder, "T0", daoSession.getWordVoiceDao().getAllColumns());
+            builder.append(" FROM WORD T");
+            builder.append(" LEFT JOIN WORD_VOICE T0 ON T.\"WORD_VOICE_ID\"=T0.\"_id\"");
+            builder.append(' ');
+            selectDeep = builder.toString();
+        }
+        return selectDeep;
+    }
+    
+    protected Word loadCurrentDeep(Cursor cursor, boolean lock) {
+        Word entity = loadCurrent(cursor, 0, lock);
+        int offset = getAllColumns().length;
+
+        WordVoice wordVoice = loadCurrentOther(daoSession.getWordVoiceDao(), cursor, offset);
+         if(wordVoice != null) {
+            entity.setWordVoice(wordVoice);
+        }
+
+        return entity;    
+    }
+
+    public Word loadDeep(Long key) {
+        assertSinglePk();
+        if (key == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder(getSelectDeep());
+        builder.append("WHERE ");
+        SqlUtils.appendColumnsEqValue(builder, "T", getPkColumns());
+        String sql = builder.toString();
+        
+        String[] keyArray = new String[] { key.toString() };
+        Cursor cursor = db.rawQuery(sql, keyArray);
+        
+        try {
+            boolean available = cursor.moveToFirst();
+            if (!available) {
+                return null;
+            } else if (!cursor.isLast()) {
+                throw new IllegalStateException("Expected unique result, but count was " + cursor.getCount());
+            }
+            return loadCurrentDeep(cursor, true);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+    /** Reads all available rows from the given cursor and returns a list of new ImageTO objects. */
+    public List<Word> loadAllDeepFromCursor(Cursor cursor) {
+        int count = cursor.getCount();
+        List<Word> list = new ArrayList<Word>(count);
+        
+        if (cursor.moveToFirst()) {
+            if (identityScope != null) {
+                identityScope.lock();
+                identityScope.reserveRoom(count);
+            }
+            try {
+                do {
+                    list.add(loadCurrentDeep(cursor, false));
+                } while (cursor.moveToNext());
+            } finally {
+                if (identityScope != null) {
+                    identityScope.unlock();
+                }
+            }
+        }
+        return list;
+    }
+    
+    protected List<Word> loadDeepAllAndCloseCursor(Cursor cursor) {
+        try {
+            return loadAllDeepFromCursor(cursor);
+        } finally {
+            cursor.close();
+        }
+    }
+    
+
+    /** A raw-style query where you can pass any WHERE clause and arguments. */
+    public List<Word> queryDeep(String where, String... selectionArg) {
+        Cursor cursor = db.rawQuery(getSelectDeep() + where, selectionArg);
+        return loadDeepAllAndCloseCursor(cursor);
+    }
+ 
 }

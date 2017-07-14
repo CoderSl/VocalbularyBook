@@ -13,7 +13,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import sliang.vocalbularybook.R;
-import sliang.vocalbularybook.TranslateData;
+import sliang.vocalbularybook.youdao.TranslateData;
 import sliang.vocalbularybook.base.activity.BaseActivity;
 import sliang.vocalbularybook.base.adapter.CommonRcvAdapter;
 import sliang.vocalbularybook.base.adapter.item.AdapterItem;

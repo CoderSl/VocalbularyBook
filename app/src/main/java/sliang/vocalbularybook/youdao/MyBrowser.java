@@ -3,7 +3,7 @@
  *                     reserved. YODAO PROPRIETARY/CONFIDENTIAL. Use is subject
  *                     to license terms.
  */
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+
+import sliang.vocalbularybook.R;
 
 /**
  * @author baijing

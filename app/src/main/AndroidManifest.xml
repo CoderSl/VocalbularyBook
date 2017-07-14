@@ -15,12 +15,12 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".DemoApplication"
+        android:name=".VocalbularyApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".youdao.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
             <!--<intent-filter>-->
@@ -31,33 +31,33 @@
         </activity>
 
         <activity
-            android:name=".TranslateActivity"
+            android:name=".youdao.TranslateActivity"
             android:theme="@style/XiaoYouStyle" >
         </activity>
 
         <activity
-            android:name=".TranslateDetailActivity"
+            android:name=".youdao.TranslateDetailActivity"
             android:theme="@style/XiaoYouStyle" >
         </activity>
 
         <activity
-            android:name=".TranslateOfflineLineActivity"
+            android:name=".youdao.TranslateOfflineLineActivity"
             android:theme="@style/XiaoYouStyle" >
         </activity>
 
         <activity
-            android:name=".TranslateOfflineWordActivity"
+            android:name=".youdao.TranslateOfflineWordActivity"
             android:theme="@style/XiaoYouStyle" >
         </activity>
 
         <activity
-            android:name=".MyBrowser"
+            android:name=".youdao.MyBrowser"
             android:theme="@style/XiaoYouStyle" >
         </activity>
 
 
         <activity
-            android:name=".HanyuActivity"
+            android:name=".youdao.HanyuActivity"
             android:theme="@style/XiaoYouStyle" >
         </activity>
 

@@ -1,22 +1,60 @@
 package sliang.vocalbularybook;
 
 import android.app.Application;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Environment;
 
 import com.youdao.sdk.app.YouDaoApplication;
+
+import java.io.File;
 
 /**
  * Created by Administrator on 2017/7/12.
  */
 
 public class VocalbularyApplication extends Application {
+    private static VocalbularyApplication youAppction;
+    private DaoMaster.DevOpenHelper mHelper;
+    private SQLiteDatabase db;
+    private DaoMaster mDaoMaster;
+    private DaoSession mDaoSession;
+
     @Override
     public void onCreate() {
         super.onCreate();
-        initYoudao();
+        YouDaoApplication.init(this,"7fba5f3934f2572d");//创建应用，每个应用都会有一个Appid，绑定对应的翻译服务实例，即可使用
+        youAppction = this;
+        initDatabase();
     }
 
-    private void initYoudao() {
-        //注册应用ID ，建议在应用启动时，初始化，所有功能的使用都需要该初始化，调用一次即可，demo中在TranslateActivity类中
-        YouDaoApplication.init(this, "7fba5f3934f2572d");
+
+
+    public static VocalbularyApplication getInstance() {
+        return youAppction;
+    }
+
+    private void initDatabase() {
+
+        File externalStorageDirectory = Environment.getExternalStorageDirectory();
+        // 通过DaoMaster 的内部类 DevOpenHelper，你可以得到一个便利的SQLiteOpenHelper 对象。
+        // 可能你已经注意到了，你并不需要去编写「CREATE TABLE」这样的 SQL 语句，因为greenDAO 已经帮你做了。
+        // 注意：默认的DaoMaster.DevOpenHelper 会在数据库升级时，删除所有的表，意味着这将导致数据的丢失。
+        // 所以，在正式的项目中，你还应该做一层封装，来实现数据库的安全升级。
+
+
+        mHelper = new DaoMaster.DevOpenHelper(this,"diction.db", null);
+        db =mHelper.getWritableDatabase();
+        // 注意：该数据库连接属于DaoMaster，所以多个 Session 指的是相同的数据库连接。
+        mDaoMaster = new DaoMaster(db);
+        mDaoSession = mDaoMaster.newSession();
+    }
+
+    public DaoSession getDaoSession() {
+        return mDaoSession;
+    }
+
+
+    public SQLiteDatabase getDb() {
+        return db;
     }
 }

@@ -1,4 +1,4 @@
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 /**
  * @(#)BrowserActivity.java, 2013年10月22日. Copyright 2013 Yodao, Inc. All
@@ -30,6 +30,7 @@ import com.youdao.sdk.ydtranslate.Translate;
 import java.util.ArrayList;
 import java.util.List;
 
+import sliang.vocalbularybook.R;
 import sliang.vocalbularybook.utils.SwListDialog;
 import sliang.vocalbularybook.utils.ToastUtils;
 

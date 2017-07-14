@@ -1,7 +1,7 @@
 /**
  * 
  */
-package sliang.vocalbularybook;
+package sliang.vocalbularybook.youdao;
 
 import com.youdao.sdk.ydtranslate.Translate;
 import com.youdao.sdk.ydtranslate.WebExplain;

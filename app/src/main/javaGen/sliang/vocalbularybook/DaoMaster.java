@@ -24,6 +24,7 @@ public class DaoMaster extends AbstractDaoMaster {
         ExplainDao.createTable(db, ifNotExists);
         TranslationsDao.createTable(db, ifNotExists);
         WordDao.createTable(db, ifNotExists);
+        WordVoiceDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
@@ -31,6 +32,7 @@ public class DaoMaster extends AbstractDaoMaster {
         ExplainDao.dropTable(db, ifExists);
         TranslationsDao.dropTable(db, ifExists);
         WordDao.dropTable(db, ifExists);
+        WordVoiceDao.dropTable(db, ifExists);
     }
 
     /**
@@ -52,6 +54,7 @@ public class DaoMaster extends AbstractDaoMaster {
         registerDaoClass(ExplainDao.class);
         registerDaoClass(TranslationsDao.class);
         registerDaoClass(WordDao.class);
+        registerDaoClass(WordVoiceDao.class);
     }
 
     public DaoSession newSession() {
